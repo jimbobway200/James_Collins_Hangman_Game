@@ -10,6 +10,8 @@
     <string name="guess_word">???</string>
     <string name="current_guesses">You have guessed: </string>
     <string name="remaining_guesses">Remaining Guesses: </string>
+    <string name="remaining_guesses_num">6</string>
+    <string name="current_guessed_letters"></string>
 
 
     <string-array name="words">
