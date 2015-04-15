@@ -23,7 +23,7 @@ public class GameActivity extends ActionBarActivity {
         TextView remaining_guesses = (TextView) findViewById(R.id.remaining_guesses);
         TextView revealed_word= (TextView) findViewById(R.id.guess_word);
 
-
+        String game_word = setupgame(0);
 
         //Add Watcher for button "GUESS"
         Button guess_button = (Button) findViewById(R.id.button_guess);
