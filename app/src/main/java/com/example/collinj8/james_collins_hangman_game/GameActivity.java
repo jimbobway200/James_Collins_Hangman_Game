@@ -12,10 +12,16 @@ import android.widget.TextView;
 
 public class GameActivity extends ActionBarActivity {
 
+    //Variables
+    public static int current_word_itt = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        //Variables
+    //    public static int current_word_itt = 0;
 
         // Grab fields from user view (activity_main.xml)
         EditText user_guess= (EditText) findViewById(R.id.user_guess);
@@ -23,7 +29,8 @@ public class GameActivity extends ActionBarActivity {
         TextView remaining_guesses = (TextView) findViewById(R.id.remaining_guesses);
         TextView revealed_word= (TextView) findViewById(R.id.guess_word);
 
-        String game_word = setupgame(0);
+        String game_word = setupgame(current_word_itt);
+        int game_word_length = game_word.length();
 
         //Add Watcher for button "GUESS"
         Button guess_button = (Button) findViewById(R.id.button_guess);
@@ -36,14 +43,14 @@ public class GameActivity extends ActionBarActivity {
         });
 
 
-        //Add Watcher for button "NEW WORD"
+        //Add Watcher for button "NEW WORD" --> User intends on getting a new word and starting from scratch
         Button new_word_button = (Button) findViewById(R.id.button_new_word);
         new_word_button.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v) {
-
-
+               current_word_itt ++;
+               setupgame(current_word_itt);
             }
         });
     }
