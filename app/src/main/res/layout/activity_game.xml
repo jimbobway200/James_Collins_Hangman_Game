@@ -31,7 +31,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="42dp"
-        android:src="@mipmap/hangman0"
+        android:src="@drawable/hangman0"
         android:layout_toStartOf="@+id/appTitle"
         android:layout_toLeftOf="@+id/appTitle" />
 
@@ -68,6 +68,7 @@
         android:layout_marginTop="50dp"
         android:maxLength="1"
         android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        android:imeOptions="actionSend"
         android:layout_toLeftOf="@+id/guess_word"
         android:layout_toStartOf="@+id/guess_word" />
 
@@ -78,8 +79,7 @@
         android:text="@string/string_guess"
         android:id="@+id/button_guess"
         android:layout_alignBottom="@+id/user_guess"
-        android:layout_toRightOf="@+id/guess_word"
-        android:layout_toEndOf="@+id/guess_word" />
+        android:layout_centerHorizontal="true" />
 
     <!--Button: NEW WORD-->
     <Button
@@ -87,10 +87,10 @@
         android:layout_height="wrap_content"
         android:text="@string/string_new_word"
         android:id="@+id/button_new_word"
-        android:layout_alignTop="@+id/button_guess"
-        android:layout_toRightOf="@+id/guess_word_prompt"
-        android:layout_toEndOf="@+id/guess_word_prompt"
-        android:elegantTextHeight="true" />
+        android:elegantTextHeight="true"
+        android:layout_alignTop="@+id/user_guess"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -98,7 +98,7 @@
         android:orientation="vertical"
 
         android:id="@+id/linearLayout"
-        android:layout_below="@+id/button_guess"
+        android:layout_below="@+id/user_guess"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 

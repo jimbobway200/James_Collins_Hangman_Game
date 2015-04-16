@@ -1,9 +1,21 @@
+// James Collins
+// CSCI 412
+// collinj8@students.wwu.edu
+// Week 3 Project
+// Hangman Game
+// Instructions:
+// 1) enter a letter to guess
+// 2) press "guess" key
+// 3) when ready for new word press "new word" button
+
+
 package com.example.collinj8.james_collins_hangman_game;
 
 import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +33,7 @@ public class GameActivity extends ActionBarActivity {
     public static int current_word_itt = 0;
     public static int wrong_answer_count = 0;
     private String[] picture_array = {"hangman0.png", "hangman1.png", "hangman2.png", "hangman3.png" , "hangman4.png", "hangman5.png", "hangman6.png"};
-
+    public String game_word = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +48,12 @@ public class GameActivity extends ActionBarActivity {
         final TextView num_remaining_guesses = (TextView) findViewById(R.id.num_guesses_left);
 
         //variables
-        final String game_word = setupgame(current_word_itt);
+        game_word = setupgame(current_word_itt);
         int game_word_length = game_word.length();
 
         //Add Watcher for button "GUESS"
-        guess_button.setOnClickListener(new View.OnClickListener() {
+        guess_button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v) {
                 try {
@@ -53,19 +66,32 @@ public class GameActivity extends ActionBarActivity {
                     //Has the user guess this already?
                     boolean already_guessed = current_guessed_string.contains(active_guess);
                     if (already_guessed) {
-                        //display in long period of time
-                        Toast toast = Toast.makeText(getApplicationContext(), "You have already guessed this letter",
-                                Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
-                        toast.show();
+                        if (active_guess.matches("")) {
+                            //display in long period of time
+                            Toast toast = Toast.makeText(getApplicationContext(), "Please guess a letter!",
+                                    Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
+                            toast.show();
+                        }
+                        else{
+                            Toast toast = Toast.makeText(getApplicationContext(), "You have already guessed this letter",
+                                    Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
+                            toast.show();
+
+                            //regardless of answer: clear keyboard
+                            user_guess.setText("");
+                        }
                     }
                     else
                     {
                         //Has not guessed this letter yet
-                        int char_found_loc = 0;
+                        int char_found_loc = -1;
                         boolean found = false;
+                        boolean first_time = true;
                         StringBuilder temp = new StringBuilder(revealed_word_string);
-                        while (char_found_loc != -1) {
+                        while ((char_found_loc != -1) || (first_time == true)) {
+                            first_time = false;
                             char_found_loc = game_word.indexOf(active_guess, char_found_loc + 1);
                             if (char_found_loc != -1) { //Did we find his guess in our game word?
                                 temp.setCharAt(char_found_loc, active_guess.charAt(0));
@@ -82,23 +108,44 @@ public class GameActivity extends ActionBarActivity {
                             //Update revealed word
                             revealed_word.setText(temp);
 
+                            //Check for Win
+                            if (temp.indexOf("?") == -1)
+                            {
+                                //Hide the Keyboard
+                                InputMethodManager inputManager = (InputMethodManager)
+                                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                                        InputMethodManager.HIDE_NOT_ALWAYS);
+
+                                //Hide Guess Button
+                                guess_button.setVisibility(View.GONE);
+
+                                Toast.makeText(getApplicationContext(), "You Win! Great work!",
+                                        Toast.LENGTH_LONG).show();
+                            }
+
                         } else { //wrong guess
                             wrong_answer_count++;
+                            //Update Current guessed letters
+                            StringBuilder new_string_current_guesses = new StringBuilder(current_guessed_string);
+                            new_string_current_guesses.append(active_guess);
+                            current_guessed_letters.setText(new_string_current_guesses);
+
                             //updated picture and remaining guesses
                             if (wrong_answer_count == 1) {
-                                img.setImageResource(R.mipmap.hangman1);
+                                img.setImageResource(R.drawable.hangman1);
                                 num_remaining_guesses.setText("5");
                             } else if (wrong_answer_count == 2) {
-                                img.setImageResource(R.mipmap.hangman2);
+                                img.setImageResource(R.drawable.hangman2);
                                 num_remaining_guesses.setText("4");
                             } else if (wrong_answer_count == 3) {
-                                img.setImageResource(R.mipmap.hangman3);
+                                img.setImageResource(R.drawable.hangman3);
                                 num_remaining_guesses.setText("3");
                             } else if (wrong_answer_count == 4) {
-                                img.setImageResource(R.mipmap.hangman4);
+                                img.setImageResource(R.drawable.hangman4);
                                 num_remaining_guesses.setText("2");
                             } else if (wrong_answer_count == 5) {
-                                img.setImageResource(R.mipmap.hangman5);
+                                img.setImageResource(R.drawable.hangman5);
                                 num_remaining_guesses.setText("1");
                             } else if (wrong_answer_count == 6) { //GAME OVER
                                 //Hide the Keyboard
@@ -108,15 +155,17 @@ public class GameActivity extends ActionBarActivity {
                                         InputMethodManager.HIDE_NOT_ALWAYS);
 
                                 //Update Picture and other aspects on page
-                                img.setImageResource(R.mipmap.hangman6);
+                                img.setImageResource(R.drawable.hangman6);
                                 guess_button.setVisibility(View.GONE); //Hide Guess Button
                                 num_remaining_guesses.setText("0");
                                 Toast.makeText(getApplicationContext(), "Sorry! You Lost! Try Again...",
                                         Toast.LENGTH_LONG).show();
                             }
 
-                        }
 
+                        }
+                        //regardless of answer: clear keyboard
+                        user_guess.setText("");
                     }
                 }//END TRY BLOCK
                 catch (Exception e) { //User Didn't enter anything
@@ -135,7 +184,27 @@ public class GameActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                current_word_itt ++;
-               setupgame(current_word_itt);
+               if (current_word_itt == 12)
+                {
+                    current_word_itt = 0;
+                }
+                game_word = setupgame(current_word_itt);
+            }
+        });
+
+        user_guess.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    switch (keyCode)
+                    {
+                        case KeyEvent.KEYCODE_ENTER:
+                            guess_button.performClick();
+                            return true;
+                    }
+                }
+                return false;
             }
         });
     }
@@ -197,7 +266,7 @@ public class GameActivity extends ActionBarActivity {
         guess_button.setVisibility(View.VISIBLE);
 
         //Set Default Picture for hangman
-        img.setImageResource(R.mipmap.hangman0);
+        img.setImageResource(R.drawable.hangman0);
 
         //Reset Wrong Answer Count
         wrong_answer_count = 0;
