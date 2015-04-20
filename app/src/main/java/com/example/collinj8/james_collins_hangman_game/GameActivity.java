@@ -12,6 +12,7 @@
 package com.example.collinj8.james_collins_hangman_game;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -117,11 +118,15 @@ public class GameActivity extends ActionBarActivity {
                                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                                         InputMethodManager.HIDE_NOT_ALWAYS);
 
+                                //Disable User Input
+                                user_guess.setEnabled(false);
+
                                 //Hide Guess Button
                                 guess_button.setVisibility(View.GONE);
 
                                 Toast.makeText(getApplicationContext(), "You Win! Great work!",
                                         Toast.LENGTH_LONG).show();
+                                revealed_word.setTextColor(Color.parseColor("#006400")); //Set word to green
                             }
 
                         } else { //wrong guess
@@ -157,9 +162,12 @@ public class GameActivity extends ActionBarActivity {
                                 //Update Picture and other aspects on page
                                 img.setImageResource(R.drawable.hangman6);
                                 guess_button.setVisibility(View.GONE); //Hide Guess Button
+                                user_guess.setEnabled(false); //Disable user input
                                 num_remaining_guesses.setText("0");
                                 Toast.makeText(getApplicationContext(), "Sorry! You Lost! Try Again...",
                                         Toast.LENGTH_LONG).show();
+                                revealed_word.setTextColor(Color.parseColor("#FF0000")); //Set text to red
+                                revealed_word.setText(game_word); //reveal guessed word
                             }
 
 
@@ -271,7 +279,21 @@ public class GameActivity extends ActionBarActivity {
         //Reset Wrong Answer Count
         wrong_answer_count = 0;
 
+        //Enable Input from user
+        user_guess.setEnabled(true);
+
+        //set guess string back to black
+        revealed_word.setTextColor(Color.parseColor("#000000"));
+
         return new_word;
     }
+
+    public void getGuess(View view){
+        //call submit function
+        final Button guess_button = (Button) findViewById(R.id.button_guess);
+        //guess_button.click
+
+    }
+
 }
 
